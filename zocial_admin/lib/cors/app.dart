@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../screen/auth/auth_screen.dart';
 import '../screen/index_screen.dart';
+import '../screen/city/city_detail.dart';
+import '../screen/city/city_list.dart';
 
 class AppRootWidget extends StatefulWidget {
   @override
@@ -34,6 +36,8 @@ class AppRootWidgetState extends State<AppRootWidget> {
       routes: {
         '/': (BuildContext context) => new IndexScreen(),
         '/auth': (BuildContext context) => new AuthScreen(),
+        CityList.routeName: (BuildContext context) => new CityList(),
+        CityDetail.routeName: (BuildContext context) => new CityDetail(),
       },
     );
   }

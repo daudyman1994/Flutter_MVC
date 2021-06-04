@@ -2,6 +2,178 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class CityCard {
+  String cityName;
+  String imageUrl;
+  CityCard({
+    required this.cityName,
+    required this.imageUrl,
+  });
+}
+
+class CityEventCard extends StatelessWidget {
+  CityEventCard({
+    required this.title,
+    required this.heroAnimation,
+    required this.backgroundImage,
+    this.onPressed,
+  });
+
+  final String title;
+  final Animation<double> heroAnimation;
+  final String backgroundImage;
+  final VoidCallback? onPressed;
+
+  // double get playButtonSize => 50 + 50 * heroAnimation.value;
+
+  @override
+  Widget build(context) {
+    // This is an inefficient usage of AnimatedBuilder since it's rebuilding
+    // the entire subtree instead of passing in a non-changing child and
+    // building a transition widget in between.
+    //
+    // Left simple in this demo because this card doesn't have any real inner
+    // content so this just rebuilds everything while animating.
+    // print(backgroundImage);
+    return AnimatedBuilder(
+      animation: heroAnimation,
+      builder: (context, child) {
+        return PressableCard(
+          onPressed: heroAnimation.value == 0 ? onPressed : null,
+          color: Colors.white.withOpacity(0.0),
+          flattenAnimation: heroAnimation,
+          child: SizedBox(
+            height: 200,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(backgroundImage),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    alignment: Alignment.center,
+                    child: Container(
+                      height: 200,
+                      color: Colors.black38,
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.all(0),
+                      child: Text(
+                        title,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class PressableCard extends StatefulWidget {
+  const PressableCard({
+    this.onPressed,
+    required this.color,
+    required this.flattenAnimation,
+    this.child,
+  });
+
+  final VoidCallback? onPressed;
+  final Color color;
+  final Animation<double> flattenAnimation;
+  final Widget? child;
+
+  @override
+  State<StatefulWidget> createState() => _PressableCardState();
+}
+
+class _PressableCardState extends State<PressableCard>
+    with SingleTickerProviderStateMixin {
+  bool pressed = false;
+  late final AnimationController controller;
+  late final Animation<double> elevationAnimation;
+
+  @override
+  void initState() {
+    controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 40),
+    );
+    elevationAnimation =
+        controller.drive(CurveTween(curve: Curves.easeInOutCubic));
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  double get flatten => 1 - widget.flattenAnimation.value;
+
+  @override
+  Widget build(context) {
+    return Listener(
+      onPointerDown: (details) {
+        if (widget.onPressed != null) {
+          controller.forward();
+        }
+      },
+      onPointerUp: (details) {
+        controller.reverse();
+      },
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          widget.onPressed?.call();
+        },
+        // This widget both internally drives an animation when pressed and
+        // responds to an external animation to flatten the card when in a
+        // hero animation. You likely want to modularize them more in your own
+        // app.
+        child: AnimatedBuilder(
+          animation:
+              Listenable.merge([elevationAnimation, widget.flattenAnimation]),
+          child: widget.child,
+          builder: (context, child) {
+            return Transform.scale(
+              // This is just a sample. You likely want to keep the math cleaner
+              // in your own app.
+              scale: 1 - elevationAnimation.value * 0.03,
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16) *
+                    flatten,
+                child: PhysicalModel(
+                  elevation:
+                      ((1 - elevationAnimation.value) * 10 + 10) * flatten,
+                  borderRadius: BorderRadius.circular(26 * flatten),
+                  clipBehavior: Clip.antiAlias,
+                  color: widget.color,
+                  child: child,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
 class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(barHeight);
@@ -207,21 +379,22 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _titleWidget(context),
-                this.centerTitle != ""
-                    ? Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            this.centerTitle!.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
+                if (this.centerTitle != "" && this.centerTitle != null)
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        this.centerTitle!.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w900,
                         ),
-                      )
-                    : Text(""),
+                      ),
+                    ),
+                  )
+                else
+                  Text(""),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -252,21 +425,22 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _titleWidget(context),
-                this.centerTitle != ""
-                    ? Expanded(
-                        child: Container(
-                          alignment: Alignment.center,
-                          child: Text(
-                            this.centerTitle!.toUpperCase(),
-                            style: TextStyle(
-                              fontSize: 24,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
+                if (this.centerTitle != "" && this.centerTitle != null)
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        this.centerTitle!.toUpperCase(),
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w900,
                         ),
-                      )
-                    : Text(""),
+                      ),
+                    ),
+                  )
+                else
+                  Text(""),
               ],
             ),
           ),
@@ -274,4 +448,22 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
       );
     }
   }
+}
+
+class CityDetailScreenArguments {
+  final String reportTitle;
+  final String reportImageUrl;
+
+  CityDetailScreenArguments(this.reportTitle, this.reportImageUrl);
+}
+
+class OrganizerItem {
+  String name;
+  String imageURL;
+  bool active;
+  OrganizerItem({
+    required this.name,
+    required this.imageURL,
+    required this.active,
+  });
 }
