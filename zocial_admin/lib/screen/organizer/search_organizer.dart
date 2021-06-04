@@ -80,6 +80,9 @@ class _SearchOrganizerState extends State<SearchOrganizer> {
       body: Container(
         child: Column(
           children: [
+            SizedBox(
+              height: 10,
+            ),
             _searchWidget,
             SizedBox(
               height: 5,

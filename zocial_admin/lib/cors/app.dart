@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../screen/auth/auth_screen.dart';
-import '../screen/index_screen.dart';
-import '../screen/city/city_detail.dart';
-import '../screen/city/city_list.dart';
+import 'package:zocial_admin/screen/organizer/organizer_home.dart';
+import 'package:zocial_admin/screen/auth/auth_screen.dart';
+import 'package:zocial_admin/screen/index_screen.dart';
+import 'package:zocial_admin/screen/city/city_detail.dart';
+import 'package:zocial_admin/screen/city/city_list.dart';
+import 'package:zocial_admin/screen/city/city_new_event.dart';
 
 class AppRootWidget extends StatefulWidget {
   @override
@@ -38,6 +40,8 @@ class AppRootWidgetState extends State<AppRootWidget> {
         '/auth': (BuildContext context) => new AuthScreen(),
         CityList.routeName: (BuildContext context) => new CityList(),
         CityDetail.routeName: (BuildContext context) => new CityDetail(),
+        OrganizerHome.routeName: (BuildContext context) => new OrganizerHome(),
+        CityNewEvent.routeName: (BuildContext context) => new CityNewEvent(),
       },
     );
   }

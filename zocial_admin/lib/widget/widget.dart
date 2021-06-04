@@ -189,6 +189,7 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
     this.actionIconData,
     this.actionIconColor,
     this.centerTitle,
+    this.actionIconBackgroundColor,
   }) : super(key: key);
 
   final String title;
@@ -199,6 +200,7 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
   final bool? pushable;
   final IconData? actionIconData;
   final Color? actionIconColor;
+  final Color? actionIconBackgroundColor;
   final String? actionIconTitle;
   final String? centerTitle;
 
@@ -323,44 +325,53 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   Widget actionIconWidget(String? tempActionIconTitle) {
-    if (tempActionIconTitle == "")
-      return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          GestureDetector(
-            onTap: () {
-              callback!();
-            },
-            child: Column(
-              children: [
-                Icon(
-                  this.actionIconData,
-                  color: this.actionIconColor,
-                  size: 24,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        this.actionIconBackgroundColor == null
+            ? GestureDetector(
+                onTap: () {
+                  callback!();
+                },
+                child: Column(
+                  children: [
+                    Icon(
+                      this.actionIconData,
+                      color: this.actionIconColor,
+                      size: 24,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
-      );
-    else
-      return Column(
-        children: [
-          Icon(
-            this.actionIconData,
-            color: this.actionIconColor,
-            size: 24,
-          ),
-          Text(
-            actionIconTitle!,
-            style: TextStyle(
-                fontSize: 11,
-                color: Color(0xFF9C9EA7),
-                fontWeight: FontWeight.normal),
-          )
-        ],
-      );
+              )
+            : Container(
+                height: 40,
+                width: 40,
+                alignment: Alignment.center,
+                child: IconButton(
+                  icon: Icon(this.actionIconData),
+                  color: this.actionIconColor,
+                  onPressed: () {
+                    callback!();
+                  },
+                ),
+                decoration: BoxDecoration(
+                    color: this.actionIconBackgroundColor,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+              ),
+        tempActionIconTitle != ""
+            ? Text(
+                actionIconTitle!,
+                style: TextStyle(
+                    fontSize: 11,
+                    color: Color(0xFF9C9EA7),
+                    fontWeight: FontWeight.normal),
+              )
+            : SizedBox(
+                height: 0,
+              ),
+      ],
+    );
   }
 
   @override
@@ -394,17 +405,14 @@ class AppCustomBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   )
                 else
-                  Text(""),
+                  SizedBox(
+                    width: 0,
+                  ),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    GestureDetector(
-                      onTap: () {
-                        callback!();
-                      },
-                      child: actionIconWidget(this.actionIconTitle),
-                    ),
+                    actionIconWidget(this.actionIconTitle),
                   ],
                 ),
               ],
@@ -466,4 +474,120 @@ class OrganizerItem {
     required this.imageURL,
     required this.active,
   });
+}
+
+class CustomTextField extends StatelessWidget {
+  CustomTextField({
+    this.icon,
+    required this.hint,
+    this.obsecure = false,
+    this.validator,
+    this.minlines,
+    this.maxlines,
+    this.label,
+    required this.onSaved,
+  });
+  final FormFieldSetter<String> onSaved;
+  final IconData? icon;
+  final String hint;
+  final bool obsecure;
+  final int? minlines;
+  final int? maxlines;
+  final String? label;
+  final FormFieldValidator<String?>? validator;
+  @override
+  Widget build(BuildContext context) {
+    if (icon == null) {
+      return Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 8),
+              child: Text(
+                label!,
+                style: TextStyle(fontWeight: FontWeight.w700),
+              ),
+            ),
+            TextFormField(
+              onSaved: onSaved,
+              validator: validator,
+              autofocus: true,
+              minLines: minlines,
+              maxLines: maxlines,
+              obscureText: obsecure,
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                hintStyle: TextStyle(fontSize: 16),
+                hintText: hint,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: Color(0xff707070),
+                    width: 2,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: Color(0xff707070),
+                    width: 3,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Container(
+        padding: EdgeInsets.only(left: 20, right: 20),
+        child: Column(
+          children: [
+            Text(label!),
+            TextFormField(
+              onSaved: onSaved,
+              validator: validator,
+              autofocus: true,
+              minLines: minlines,
+              maxLines: maxlines,
+              obscureText: obsecure,
+              style: TextStyle(
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                hintStyle: TextStyle(fontSize: 20),
+                hintText: hint,
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: Color(0xff707070),
+                    width: 2,
+                  ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide(
+                    color: Color(0xff707070),
+                    width: 3,
+                  ),
+                ),
+                prefixIcon: Padding(
+                    child: IconTheme(
+                      data: IconThemeData(
+                        color: Color(0xff707070),
+                      ),
+                      child: Icon(icon),
+                    ),
+                    padding: EdgeInsets.only(left: 30, right: 10)),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 }

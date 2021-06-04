@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:zocial_admin/screen/city/city_detail.dart';
 import 'package:zocial_admin/screen/city/city_list.dart';
+import 'package:zocial_admin/screen/organizer/organizer_home.dart';
 import 'package:zocial_admin/widget/widget.dart';
 import 'package:zocial_admin/cors/app_state_container.dart';
 
@@ -66,7 +67,7 @@ class _HomeState extends State<Home> {
                 onTap: () {
                   Navigator.pushNamed(
                     context,
-                    CityDetail.routeName,
+                    OrganizerHome.routeName,
                   );
                 },
                 leading: Icon(
@@ -92,7 +93,7 @@ class _HomeState extends State<Home> {
                   container.onLogout(context);
                 },
                 leading: Icon(
-                  Icons.person_add,
+                  Icons.phonelink_lock,
                   color: Color(0xff82C034),
                 ),
                 title: Text(

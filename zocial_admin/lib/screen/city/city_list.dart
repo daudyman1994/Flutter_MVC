@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:zocial_admin/screen/city/city_new_event.dart';
 import 'package:zocial_admin/widget/widget.dart';
 import 'package:zocial_admin/model/model.dart' show CityModel;
 
@@ -49,13 +50,14 @@ class _CityListState extends State<CityList> {
           backgroundImage: cityCardLists[index].imageUrl,
           heroAnimation: AlwaysStoppedAnimation(0),
           onPressed: () {
-            Navigator.pushNamed(context, CityDetail.routeName,
-                arguments: CityDetailScreenArguments(
-                  cityCardLists[index].cityName,
-                  cityCardLists[index].imageUrl,
-                )
-                // arguments: cityCardLists[index].cityName,
-                );
+            Navigator.pushNamed(
+              context, CityDetail.routeName,
+              arguments: CityDetailScreenArguments(
+                cityCardLists[index].cityName,
+                cityCardLists[index].imageUrl,
+              ),
+              // arguments: cityCardLists[index].cityName,
+            );
           },
         ),
       ),
@@ -73,7 +75,17 @@ class _CityListState extends State<CityList> {
         title: CityList.appbarTitle.toUpperCase(),
         subtitle: "",
         pushable: true,
-        actionIcon: false,
+        actionIcon: true,
+        actionIconTitle: "",
+        actionIconColor: Color(0xFFFFFFFF),
+        actionIconBackgroundColor: Color(0xff82C034),
+        callback: () {
+          Navigator.pushNamed(
+            context,
+            CityNewEvent.routeName,
+          );
+        },
+        actionIconData: Icons.add,
       ),
       // drawer: widget.androidDrawer,
       body: RefreshIndicator(

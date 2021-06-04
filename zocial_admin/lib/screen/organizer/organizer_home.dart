@@ -5,16 +5,16 @@ import 'package:zocial_admin/widget/widget.dart';
 // import 'package:zocial_admin/model/model.dart';
 import 'package:zocial_admin/screen/organizer/active_organizer.dart';
 
-class CityDetail extends StatefulWidget {
-  CityDetail({Key? key}) : super(key: key);
-
-  static String routeName = "/city/city_detail";
+class OrganizerHome extends StatefulWidget {
+  OrganizerHome({Key? key}) : super(key: key);
+  final String title = "Create Organizer";
+  static String routeName = "/organizer";
   @override
-  _CityDetailState createState() => _CityDetailState();
+  _OrganizerHomeState createState() => _OrganizerHomeState();
 }
 
-class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
-  late CityDetailScreenArguments arguments;
+class _OrganizerHomeState extends State<OrganizerHome>
+    with TickerProviderStateMixin {
   late TabController _tabController;
   int _currentIndex = 0;
   @override
@@ -38,43 +38,10 @@ class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    arguments =
-        ModalRoute.of(context)!.settings.arguments as CityDetailScreenArguments;
     return _build(context);
   }
 
-  Widget get _cityDetailThumbnail {
-    return Container(
-      padding: EdgeInsets.zero,
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height / 4,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.zero,
-        image: DecorationImage(
-          image: AssetImage(arguments.reportImageUrl),
-          fit: BoxFit.cover,
-        ),
-      ),
-      alignment: Alignment.center,
-      child: Container(
-        height: 200,
-        color: Colors.black38.withOpacity(0.0),
-        alignment: Alignment.center,
-        padding: EdgeInsets.all(0),
-        child: Text(
-          arguments.reportTitle,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 25,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget get _cityDetailOrganizerTab {
+  Widget get _organizerTab {
     return Expanded(
       child: Container(
         child: Column(
@@ -92,8 +59,8 @@ class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
                           BoxShadow(
                             color: Colors.black54,
                             blurRadius: 15.0,
-                            offset: Offset(0.0, 0.05),
-                          ),
+                            offset: Offset(0.0, 0.75),
+                          )
                         ],
                         color: Colors.white,
                       ),
@@ -138,9 +105,7 @@ class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
                   ),
                   body: TabBarView(
                     children: <Widget>[
-                      ActiveOrganizer(
-                        searchBox: false,
-                      ),
+                      ActiveOrganizer(searchBox: true),
                       SearchOrganizer(),
                     ],
                     controller: _tabController,
@@ -157,7 +122,7 @@ class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
   Widget _build(BuildContext context) {
     return Scaffold(
       appBar: AppCustomBar(
-        title: arguments.reportTitle.toUpperCase(),
+        title: widget.title,
         subtitle: "",
         actionIcon: false,
         pushable: true,
@@ -166,8 +131,7 @@ class _CityDetailState extends State<CityDetail> with TickerProviderStateMixin {
       body: Container(
         child: Column(
           children: <Widget>[
-            _cityDetailThumbnail,
-            _cityDetailOrganizerTab,
+            _organizerTab,
           ],
         ),
       ),

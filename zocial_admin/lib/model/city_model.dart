@@ -21,6 +21,16 @@ class CityModel {
     return _cityCardLists;
   }
 
+  List<String> _cityNameList = [];
+
+  List<String> get cityNameList {
+    _cityNameList = [
+      "COLOGNE",
+      "MUNICH",
+      "KASSEL",
+    ];
+    return _cityNameList;
+  }
   // Future<List<CityCard>> getCityList() async {
   //   _cityCardLists = [
   //     CityCard(
